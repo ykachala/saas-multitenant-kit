@@ -140,7 +140,7 @@ This kit solves those problems before you write a line of product code. It's the
 ## Getting started
 
 ```bash
-git clone https://github.com/joel767443/saas-multitenant-kit.git
+git clone https://github.com/ykachala/saas-multitenant-kit.git
 cd saas-multitenant-kit
 cp .env.example .env
 docker compose up -d
@@ -227,8 +227,8 @@ This is that foundation. The architectural decisions here are deliberate, docume
 
 ## Related
 
-- [nexus-scheduler](https://github.com/joel767443/nexus-scheduler) — AI scheduling engine that can be embedded into this SaaS kit  
-- [hookstream](https://github.com/joel767443/hookstream) — webhook delivery engine for outbound events
+- [nexus-scheduler](https://github.com/ykachala/nexus-scheduler) — AI scheduling engine that can be embedded into this SaaS kit  
+- [hookstream](https://github.com/ykachala/hookstream) — webhook delivery engine for outbound events
 
 ---
 
