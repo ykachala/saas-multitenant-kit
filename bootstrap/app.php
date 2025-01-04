@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'tenant' => \App\Http\Middleware\ResolveTenant::class,
+            'feature' => \App\Http\Middleware\EnforceFeatureGate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
