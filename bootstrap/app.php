@@ -12,8 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'tenant' => \App\Http\Middleware\ResolveTenant::class,
+            'tenant'  => \App\Http\Middleware\ResolveTenant::class,
             'feature' => \App\Http\Middleware\EnforceFeatureGate::class,
+            'ability' => \App\Http\Middleware\CheckTokenAbility::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
