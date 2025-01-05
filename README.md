@@ -218,7 +218,7 @@ This is a starting point, not a constraint. Common customisations:
 
 I've built multi-tenant SaaS from scratch multiple times. The first time takes weeks to get right. The second time, you make different mistakes. By the third, you know exactly what the foundation needs to look like.
 
-This is that foundation. The architectural decisions here are deliberate, documented, and production-tested.
+This is that foundation. The architectural decisions here are deliberate, documented, and production-hardened.
 
 ---
 
