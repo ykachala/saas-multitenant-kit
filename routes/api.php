@@ -41,5 +41,5 @@ Route::prefix('v1')->group(function () {
     Route::post('billing/webhook', [BillingController::class, 'webhook']);
 
     // Health
-    Route::get('health', fn () => response()->json(['status' => 'ok', 'timestamp' => now()->toIso8601String()]));
+    Route::get('health', \App\Http\Controllers\Api\V1\HealthController::class);
 });
