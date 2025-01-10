@@ -61,14 +61,11 @@ This kit solves those problems before you write a line of product code. It's the
                     ┌──────────┴──────────┐
                     ▼                     ▼
               PostgreSQL               Redis
-           (per-schema or          (tenant config cache,
-            shared + RLS)           rate limits, queues)
+           (shared schema,          (tenant config cache,
+            tenant_id column)        rate limits, queues)
 ```
 
-**Key isolation strategies included (choose one):**
-
-1. **Shared schema + `tenant_id` column** (default) — simpler ops, global query scope prevents leakage
-2. **Per-tenant schema** — stronger isolation, included as a config flag
+**Isolation strategy:** Shared schema + `tenant_id` column. The global query scope auto-applies `WHERE tenant_id = ?` on every Eloquent query — no manual scoping required.
 
 ---
 
@@ -77,7 +74,7 @@ This kit solves those problems before you write a line of product code. It's the
 | Layer | Technology |
 |-------|-----------|
 | Framework | Laravel 11 / PHP 8.2+ |
-| Database | PostgreSQL 15 (+ MySQL config provided) |
+| Database | PostgreSQL 15 |
 | Cache | Redis 7 |
 | Queue | Laravel Horizon (Redis-backed) |
 | Auth | Laravel Sanctum (API tokens + session) |
@@ -95,7 +92,7 @@ This kit solves those problems before you write a line of product code. It's the
 ### Tenant management
 - Tenant registration with subdomain provisioning
 - Subdomain and custom domain routing (Nginx config included)
-- Tenant suspension, activation, and deletion with cascade
+- Tenant suspension and activation (cascade delete via DB foreign key)
 - Per-tenant configuration storage (timezone, locale, branding)
 - Tenant context available anywhere via `tenant()` helper
 
@@ -109,7 +106,7 @@ This kit solves those problems before you write a line of product code. It's the
 - Multi-tenant user model (users belong to tenants, not global)
 - Role-based access control: Owner, Admin, Member, custom roles
 - API token auth (Sanctum) with per-token scopes
-- Invite-based user onboarding with signed URLs
+- Invite-based user onboarding with secure random tokens (7-day expiry)
 
 ### Billing & plans
 - Plan model: Free, Starter, Pro, Enterprise (fully configurable)
@@ -117,21 +114,21 @@ This kit solves those problems before you write a line of product code. It's the
 - Usage limits tied to plan: `$tenant->withinLimit('seats', count($users))`
 - Paystack integration: subscription creation, webhook handling, plan sync
 - Stripe integration: identical interface, swap driver in config
-- Billing portal endpoints (upgrade, downgrade, cancel, invoice list)
-- Failed payment handling with grace period logic
+- Billing portal endpoints (subscribe, cancel, invoice list)
+- Failed payment webhook handling — suspends tenant on non-payment
 
 ### API scaffold
 - Versioned REST API (`/api/v1/...`)
 - Consistent response envelope: `{ data, meta, errors }`
 - Pagination on all collection endpoints
-- Request validation with form requests
+- Request validation inline in controllers (Form Request classes are the extension point)
 - Rate limiting per tenant (configurable)
 - API documentation via Scribe (auto-generated from code)
 
 ### DevOps
 - Full Docker Compose stack: app, postgres, redis, nginx, horizon
 - `.env.example` with all variables documented
-- GitHub Actions: lint (Pint), static analysis (PHPStan level 8), tests, build
+- GitHub Actions: lint (Pint), static analysis (PHPStan level 6), tests, build
 - Makefile with common commands (`make test`, `make migrate`, `make horizon`)
 - Health check endpoint for load balancer integration
 
