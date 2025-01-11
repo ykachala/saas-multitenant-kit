@@ -11,6 +11,7 @@
 ![GitHub Actions](https://img.shields.io/badge/CI%2FCD-2088FF?style=flat&logo=github-actions&logoColor=white)
 ![Paystack](https://img.shields.io/badge/Paystack-00C3F7?style=flat)
 ![Stripe](https://img.shields.io/badge/Stripe-635BFF?style=flat&logo=stripe&logoColor=white)
+[![CI](https://github.com/ykachala/saas-multitenant-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ykachala/saas-multitenant-kit/actions/workflows/ci.yml)
 
 ---
 
