@@ -1,15 +1,18 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Models\Tenant;
 use App\Services\TenantService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('TenantService', function () {
     it('creates a tenant with the given name and subdomain', function () {
-        $service = new TenantService();
-        $tenant  = $service->create(fake()->company(), 'test-' . fake()->lexify('??????'));
+        $service = new TenantService;
+        $tenant = $service->create(fake()->company(), 'test-'.fake()->lexify('??????'));
 
         expect($tenant)->toBeInstanceOf(Tenant::class)
             ->and($tenant->status)->toBe('active')
@@ -18,8 +21,8 @@ describe('TenantService', function () {
 
     it('suspend sets status to suspended and caches are cleared', function () {
         Cache::spy();
-        $service = new TenantService();
-        $tenant  = Tenant::factory()->create();
+        $service = new TenantService;
+        $tenant = Tenant::factory()->create();
 
         $service->suspend($tenant);
         $tenant->refresh();
@@ -31,8 +34,8 @@ describe('TenantService', function () {
     });
 
     it('activate restores suspended tenant', function () {
-        $service = new TenantService();
-        $tenant  = Tenant::factory()->suspended()->create();
+        $service = new TenantService;
+        $tenant = Tenant::factory()->suspended()->create();
 
         $service->activate($tenant);
         $tenant->refresh();
@@ -42,8 +45,8 @@ describe('TenantService', function () {
     });
 
     it('updateConfig deep-merges config', function () {
-        $service = new TenantService();
-        $tenant  = Tenant::factory()->create(['config' => ['locale' => 'en']]);
+        $service = new TenantService;
+        $tenant = Tenant::factory()->create(['config' => ['locale' => 'en']]);
 
         $service->updateConfig($tenant, ['timezone' => 'Africa/Harare']);
         $tenant->refresh();

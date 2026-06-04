@@ -25,6 +25,9 @@
             Redis. Forcing these values keeps every test run hermetic and isolated.
         -->
         <env name="APP_ENV" value="testing" force="true"/>
+        <!-- Fixed, throwaway key so the suite is self-contained and never depends on
+             a generated .env or a CI-provided APP_KEY. Not used outside testing. -->
+        <env name="APP_KEY" value="base64:2yqEKgw1kWZ3KpQ0T0JKwhNkTitbP+6monDOO8SQwXk=" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file" force="true"/>
         <env name="BCRYPT_ROUNDS" value="4" force="true"/>
         <env name="CACHE_STORE" value="array" force="true"/>

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -13,11 +15,11 @@ class TenantFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'      => fake()->company(),
+            'name' => fake()->company(),
             'subdomain' => fake()->unique()->slug(2),
-            'plan'      => fake()->randomElement(['free', 'starter', 'pro', 'enterprise']),
-            'status'    => 'active',
-            'config'    => [],
+            'plan' => fake()->randomElement(['free', 'starter', 'pro', 'enterprise']),
+            'status' => 'active',
+            'config' => [],
         ];
     }
 

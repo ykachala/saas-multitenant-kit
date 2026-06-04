@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services\Billing;
 
@@ -17,19 +19,19 @@ class StripeDriver implements BillingDriverInterface
     public function createSubscription(Tenant $tenant, string $priceId, string $email): array
     {
         $customer = $this->stripe->customers->create([
-            'email'    => $email,
+            'email' => $email,
             'metadata' => ['tenant_id' => $tenant->id],
         ]);
 
         $subscription = $this->stripe->subscriptions->create([
             'customer' => $customer->id,
-            'items'    => [['price' => $priceId]],
+            'items' => [['price' => $priceId]],
             'metadata' => ['tenant_id' => $tenant->id],
         ]);
 
         $tenant->update([
             'config' => array_merge($tenant->config ?? [], [
-                'stripe_customer_id'     => $customer->id,
+                'stripe_customer_id' => $customer->id,
                 'stripe_subscription_id' => $subscription->id,
             ]),
         ]);
@@ -66,7 +68,7 @@ class StripeDriver implements BillingDriverInterface
         $type = $payload['type'] ?? null;
 
         match ($type) {
-            'invoice.payment_failed'    => $this->onPaymentFailed($payload['data']['object']),
+            'invoice.payment_failed' => $this->onPaymentFailed($payload['data']['object']),
             'customer.subscription.deleted' => $this->onSubscriptionDeleted($payload['data']['object']),
             default => null,
         };

@@ -1,23 +1,26 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Models\Tenant;
 use App\Services\Billing\PaystackDriver;
 use App\Services\Billing\StripeDriver;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('PaystackDriver', function () {
     it('createSubscription posts to Paystack API and returns data', function () {
         Http::fake([
             'api.paystack.co/subscription' => Http::response([
                 'status' => true,
-                'data'   => ['subscription_code' => 'SUB_' . fake()->uuid()],
+                'data' => ['subscription_code' => 'SUB_'.fake()->uuid()],
             ], 200),
         ]);
 
         $tenant = Tenant::factory()->create();
-        $driver = new PaystackDriver();
+        $driver = new PaystackDriver;
 
         $result = $driver->createSubscription($tenant, 'PLN_test', fake()->safeEmail());
 
@@ -27,22 +30,22 @@ describe('PaystackDriver', function () {
 
     it('getInvoices returns empty array when no customer code', function () {
         $tenant = Tenant::factory()->create(['config' => []]);
-        $driver = new PaystackDriver();
+        $driver = new PaystackDriver;
 
         expect($driver->getInvoices($tenant))->toBe([]);
     });
 
     it('handleWebhook subscription.create stores subscription code on tenant', function () {
         $tenant = Tenant::factory()->create();
-        $driver = new PaystackDriver();
+        $driver = new PaystackDriver;
 
         $driver->handleWebhook([
             'event' => 'subscription.create',
-            'data'  => [
+            'data' => [
                 'subscription_code' => 'SUB_abc123',
-                'email_token'       => 'email_tok_xyz',
-                'metadata'          => ['tenant_id' => $tenant->id],
-                'customer'          => ['customer_code' => 'CUS_abc'],
+                'email_token' => 'email_tok_xyz',
+                'metadata' => ['tenant_id' => $tenant->id],
+                'customer' => ['customer_code' => 'CUS_abc'],
             ],
         ]);
 

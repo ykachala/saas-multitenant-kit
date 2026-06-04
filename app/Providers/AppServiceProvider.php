@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Providers;
 
@@ -18,13 +20,14 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request) {
             $tenant = tenant();
-            $key = $tenant?->id ?? $request->ip();
+            $key = $tenant ? $tenant->id : $request->ip();
             $limit = match ($tenant?->plan) {
                 'enterprise' => 10000,
-                'pro'        => 3000,
-                'starter'    => 1000,
-                default      => 100,
+                'pro' => 3000,
+                'starter' => 1000,
+                default => 100,
             };
+
             return Limit::perMinute($limit)->by($key);
         });
     }

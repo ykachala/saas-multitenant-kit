@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -39,7 +41,7 @@ class ResolveTenant
         $prefix = config('tenancy.cache.prefix', 'tenant:');
 
         return Cache::remember(
-            $prefix . $identifier,
+            $prefix.$identifier,
             $ttl,
             fn () => $this->findTenant($identifier, $request),
         );

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -14,9 +16,9 @@ class EnforceFeatureGate
 
         if ($tenant === null || ! $tenant->can($feature)) {
             return response()->json([
-                'error'   => 'This feature is not available on your current plan.',
+                'error' => 'This feature is not available on your current plan.',
                 'feature' => $feature,
-                'plan'    => $tenant?->plan,
+                'plan' => $tenant?->plan,
             ], 403);
         }
 

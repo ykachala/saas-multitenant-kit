@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\CheckTokenAbility;
+use App\Http\Middleware\EnforceFeatureGate;
+use App\Http\Middleware\ResolveTenant;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,9 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'tenant'  => \App\Http\Middleware\ResolveTenant::class,
-            'feature' => \App\Http\Middleware\EnforceFeatureGate::class,
-            'ability' => \App\Http\Middleware\CheckTokenAbility::class,
+            'tenant' => ResolveTenant::class,
+            'feature' => EnforceFeatureGate::class,
+            'ability' => CheckTokenAbility::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

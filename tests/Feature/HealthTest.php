@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 describe('health endpoint', function () {
     it('returns 200 with status ok', function () {

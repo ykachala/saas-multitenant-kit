@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class ApiController extends Controller
 {
@@ -18,10 +20,10 @@ abstract class ApiController extends Controller
         return response()->json([
             'data' => $paginator->items(),
             'meta' => [
-                'total'        => $paginator->total(),
-                'per_page'     => $paginator->perPage(),
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
                 'current_page' => $paginator->currentPage(),
-                'last_page'    => $paginator->lastPage(),
+                'last_page' => $paginator->lastPage(),
             ],
         ]);
     }

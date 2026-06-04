@@ -1,22 +1,27 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Models\Invite;
 use App\Models\Tenant;
+use App\Models\User;
 use App\Services\AuthService;
 use App\Services\TenantService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('AuthService', function () {
     beforeEach(function () {
-        $this->service = new AuthService(new TenantService());
+        $this->service = new AuthService(new TenantService);
     });
 
     it('registerTenant creates tenant, owner user, and returns token', function () {
         $result = $this->service->registerTenant(
             fake()->company(),
-            'sub-' . fake()->unique()->lexify('??????'),
+            'sub-'.fake()->unique()->lexify('??????'),
             fake()->name(),
             fake()->safeEmail(),
             'password123',
@@ -28,9 +33,9 @@ describe('AuthService', function () {
 
     it('login throws on wrong password', function () {
         $tenant = Tenant::factory()->create();
-        \App\Models\User::factory()->for($tenant)->create([
-            'email'    => 'x@x.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('correct'),
+        User::factory()->for($tenant)->create([
+            'email' => 'x@x.com',
+            'password' => Hash::make('correct'),
         ]);
 
         expect(fn () => $this->service->login($tenant, 'x@x.com', 'wrong'))

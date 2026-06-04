@@ -1,20 +1,23 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Models\Invite;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('auth API', function () {
     it('registers a new tenant and returns token', function () {
         $response = $this->postJson('/api/v1/register', [
             'tenant_name' => fake()->company(),
-            'subdomain'   => 'test-' . fake()->unique()->lexify('??????'),
-            'name'        => fake()->name(),
-            'email'       => fake()->safeEmail(),
-            'password'    => 'password123',
+            'subdomain' => 'test-'.fake()->unique()->lexify('??????'),
+            'name' => fake()->name(),
+            'email' => fake()->safeEmail(),
+            'password' => 'password123',
         ]);
 
         $response->assertStatus(201)
@@ -26,10 +29,10 @@ describe('auth API', function () {
 
         $response = $this->postJson('/api/v1/register', [
             'tenant_name' => fake()->company(),
-            'subdomain'   => 'taken',
-            'name'        => fake()->name(),
-            'email'       => fake()->safeEmail(),
-            'password'    => 'password123',
+            'subdomain' => 'taken',
+            'name' => fake()->name(),
+            'email' => fake()->safeEmail(),
+            'password' => 'password123',
         ]);
 
         $response->assertStatus(422);
@@ -38,7 +41,7 @@ describe('auth API', function () {
     it('logs in with valid credentials', function () {
         $tenant = Tenant::factory()->create();
         $user = User::factory()->for($tenant)->create([
-            'email'    => 'user@test.com',
+            'email' => 'user@test.com',
             'password' => Hash::make('secret123'),
         ]);
 
@@ -52,7 +55,7 @@ describe('auth API', function () {
     it('rejects wrong password on login', function () {
         $tenant = Tenant::factory()->create();
         User::factory()->for($tenant)->create([
-            'email'    => 'user2@test.com',
+            'email' => 'user2@test.com',
             'password' => Hash::make('correctpass'),
         ]);
 
@@ -66,8 +69,8 @@ describe('auth API', function () {
         $invite = Invite::factory()->create(['role' => 'member']);
 
         $response = $this->postJson('/api/v1/invites/accept', [
-            'token'    => $invite->token,
-            'name'     => fake()->name(),
+            'token' => $invite->token,
+            'name' => fake()->name(),
             'password' => 'newpassword1',
         ]);
 
@@ -78,8 +81,8 @@ describe('auth API', function () {
         $invite = Invite::factory()->expired()->create();
 
         $response = $this->postJson('/api/v1/invites/accept', [
-            'token'    => $invite->token,
-            'name'     => fake()->name(),
+            'token' => $invite->token,
+            'name' => fake()->name(),
             'password' => 'newpassword1',
         ]);
 

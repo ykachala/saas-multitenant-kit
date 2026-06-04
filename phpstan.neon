@@ -5,4 +5,9 @@ parameters:
     paths:
         - app
     level: 6
-    checkMissingIterableValueType: false
+    # PHPStan 2.x removed the `checkMissingIterableValueType` parameter. These two
+    # identifiers are its equivalent: ignoring them keeps full level-6 analysis while
+    # not requiring array value-type / generic annotations on every signature.
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics

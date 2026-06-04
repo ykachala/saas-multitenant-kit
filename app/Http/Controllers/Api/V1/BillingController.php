@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -14,7 +16,7 @@ class BillingController extends ApiController
     {
         $data = $request->validate([
             'plan_code' => ['required', 'string'],
-            'email'     => ['required', 'email'],
+            'email' => ['required', 'email'],
         ]);
 
         $tenant = $request->user()->tenant;
@@ -26,18 +28,21 @@ class BillingController extends ApiController
     public function cancel(Request $request): JsonResponse
     {
         $this->billingService->cancel($request->user()->tenant);
+
         return $this->success(['cancelled' => true]);
     }
 
     public function invoices(Request $request): JsonResponse
     {
         $invoices = $this->billingService->invoices($request->user()->tenant);
+
         return $this->success($invoices);
     }
 
     public function webhook(Request $request): JsonResponse
     {
         $this->billingService->handleWebhook($request->all());
+
         return $this->success(['received' => true]);
     }
 }

@@ -1,15 +1,27 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\InviteFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $tenant_id
+ * @property string $email
+ * @property string $role
+ * @property string $token
+ * @property Carbon|null $accepted_at
+ * @property Carbon $expires_at
+ */
 class Invite extends Model
 {
-    /** @use HasFactory<\Database\Factories\InviteFactory> */
+    /** @use HasFactory<InviteFactory> */
     use HasFactory, HasUuids;
 
     protected $fillable = [
@@ -25,7 +37,7 @@ class Invite extends Model
     {
         return [
             'accepted_at' => 'datetime',
-            'expires_at'  => 'datetime',
+            'expires_at' => 'datetime',
         ];
     }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -18,9 +20,9 @@ class TenantController extends ApiController
     public function updateConfig(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'config'          => ['required', 'array'],
+            'config' => ['required', 'array'],
             'config.timezone' => ['sometimes', 'string', 'timezone'],
-            'config.locale'   => ['sometimes', 'string', 'max:10'],
+            'config.locale' => ['sometimes', 'string', 'max:10'],
         ]);
 
         $tenant = $request->user()->tenant;

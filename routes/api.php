@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BillingController;
+use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -41,5 +44,5 @@ Route::prefix('v1')->group(function () {
     Route::post('billing/webhook', [BillingController::class, 'webhook']);
 
     // Health
-    Route::get('health', \App\Http\Controllers\Api\V1\HealthController::class);
+    Route::get('health', HealthController::class);
 });

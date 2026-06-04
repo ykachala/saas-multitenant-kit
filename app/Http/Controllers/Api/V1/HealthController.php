@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -29,8 +31,8 @@ class HealthController extends ApiController
         $status = $dbOk && $cacheOk ? 200 : 503;
 
         return response()->json([
-            'status'    => $status === 200 ? 'ok' : 'degraded',
-            'checks'    => ['database' => $dbOk, 'cache' => $cacheOk],
+            'status' => $status === 200 ? 'ok' : 'degraded',
+            'checks' => ['database' => $dbOk, 'cache' => $cacheOk],
             'timestamp' => now()->toIso8601String(),
         ], $status);
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -11,7 +13,7 @@ class BillingService
 
     public function __construct()
     {
-        $driverClass = config('tenancy.billing.drivers.' . config('tenancy.billing.driver'));
+        $driverClass = config('tenancy.billing.drivers.'.config('tenancy.billing.driver'));
 
         if (! class_exists($driverClass)) {
             throw new \RuntimeException("Billing driver [{$driverClass}] not found.");

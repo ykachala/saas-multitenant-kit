@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -10,10 +12,10 @@ class TenantService
     public function create(string $name, string $subdomain, string $plan = 'free'): Tenant
     {
         return Tenant::create([
-            'name'      => $name,
+            'name' => $name,
             'subdomain' => $subdomain,
-            'plan'      => $plan,
-            'status'    => 'active',
+            'plan' => $plan,
+            'status' => 'active',
         ]);
     }
 
@@ -38,10 +40,10 @@ class TenantService
     public function invalidateCache(Tenant $tenant): void
     {
         $prefix = config('tenancy.cache.prefix', 'tenant:');
-        Cache::forget($prefix . $tenant->subdomain);
+        Cache::forget($prefix.$tenant->subdomain);
         if ($tenant->custom_domain) {
-            Cache::forget($prefix . $tenant->custom_domain);
+            Cache::forget($prefix.$tenant->custom_domain);
         }
-        Cache::forget($prefix . $tenant->id);
+        Cache::forget($prefix.$tenant->id);
     }
 }

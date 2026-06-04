@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Enums;
 
 enum TokenAbility: string
 {
-    case READ  = 'read';
+    case READ = 'read';
     case WRITE = 'write';
     case ADMIN = 'admin';
 

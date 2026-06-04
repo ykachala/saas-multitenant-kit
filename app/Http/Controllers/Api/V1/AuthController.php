@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -14,10 +16,10 @@ class AuthController extends ApiController
     {
         $data = $request->validate([
             'tenant_name' => ['required', 'string', 'max:255'],
-            'subdomain'   => ['required', 'string', 'alpha_dash', 'max:63', 'unique:tenants,subdomain'],
-            'name'        => ['required', 'string', 'max:255'],
-            'email'       => ['required', 'email'],
-            'password'    => ['required', 'string', 'min:8'],
+            'subdomain' => ['required', 'string', 'alpha_dash', 'max:63', 'unique:tenants,subdomain'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8'],
         ]);
 
         $result = $this->authService->registerTenant(
@@ -34,7 +36,7 @@ class AuthController extends ApiController
     public function login(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'email'    => ['required', 'email'],
+            'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -60,7 +62,7 @@ class AuthController extends ApiController
     {
         $data = $request->validate([
             'email' => ['required', 'email'],
-            'role'  => ['sometimes', 'in:admin,member'],
+            'role' => ['sometimes', 'in:admin,member'],
         ]);
 
         $tenant = $request->user()->tenant;
@@ -72,8 +74,8 @@ class AuthController extends ApiController
     public function acceptInvite(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'token'    => ['required', 'string', 'size:64'],
-            'name'     => ['required', 'string', 'max:255'],
+            'token' => ['required', 'string', 'size:64'],
+            'name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 

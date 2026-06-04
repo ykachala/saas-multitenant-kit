@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Database\Factories;
 
@@ -15,10 +17,10 @@ class InviteFactory extends Factory
     public function definition(): array
     {
         return [
-            'tenant_id'  => Tenant::factory(),
-            'email'      => fake()->safeEmail(),
-            'role'       => fake()->randomElement(['admin', 'member']),
-            'token'      => Str::random(64),
+            'tenant_id' => Tenant::factory(),
+            'email' => fake()->safeEmail(),
+            'role' => fake()->randomElement(['admin', 'member']),
+            'token' => Str::random(64),
             'expires_at' => now()->addDays(7),
         ];
     }

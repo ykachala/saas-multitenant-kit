@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -19,10 +21,10 @@ class AuthService
 
         $user = User::create([
             'tenant_id' => $tenant->id,
-            'name'      => $ownerName,
-            'email'     => $email,
-            'password'  => Hash::make($password),
-            'role'      => 'owner',
+            'name' => $ownerName,
+            'email' => $email,
+            'password' => Hash::make($password),
+            'role' => 'owner',
         ]);
 
         $token = $user->createToken('default')->plainTextToken;
@@ -51,10 +53,10 @@ class AuthService
     public function createInvite(Tenant $tenant, string $email, string $role = 'member'): Invite
     {
         return Invite::create([
-            'tenant_id'  => $tenant->id,
-            'email'      => $email,
-            'role'       => $role,
-            'token'      => Str::random(64),
+            'tenant_id' => $tenant->id,
+            'email' => $email,
+            'role' => $role,
+            'token' => Str::random(64),
             'expires_at' => now()->addDays(7),
         ]);
     }
@@ -69,10 +71,10 @@ class AuthService
 
         $user = User::create([
             'tenant_id' => $invite->tenant_id,
-            'name'      => $name,
-            'email'     => $invite->email,
-            'password'  => Hash::make($password),
-            'role'      => $invite->role,
+            'name' => $name,
+            'email' => $invite->email,
+            'password' => Hash::make($password),
+            'role' => $invite->role,
         ]);
 
         $invite->update(['accepted_at' => now()]);

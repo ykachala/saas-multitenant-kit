@@ -1,9 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('users API', function () {
     it('returns 401 without auth token', function () {
@@ -16,7 +19,7 @@ describe('users API', function () {
 
     it('lists users for the authenticated tenant', function () {
         $tenant = Tenant::factory()->create();
-        $owner  = User::factory()->for($tenant)->create(['role' => 'owner']);
+        $owner = User::factory()->for($tenant)->create(['role' => 'owner']);
         User::factory()->count(3)->for($tenant)->create();
 
         // Users from another tenant — must not appear
@@ -26,8 +29,8 @@ describe('users API', function () {
         $token = $owner->createToken('test')->plainTextToken;
 
         $response = $this->withHeaders([
-            'X-Tenant-ID'   => $tenant->subdomain,
-            'Authorization' => 'Bearer ' . $token,
+            'X-Tenant-ID' => $tenant->subdomain,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson('/api/v1/users');
 
         $response->assertStatus(200)
@@ -36,14 +39,14 @@ describe('users API', function () {
 
     it('owner can update another user role', function () {
         $tenant = Tenant::factory()->create();
-        $owner  = User::factory()->for($tenant)->create(['role' => 'owner']);
+        $owner = User::factory()->for($tenant)->create(['role' => 'owner']);
         $member = User::factory()->for($tenant)->create(['role' => 'member']);
 
         $token = $owner->createToken('test')->plainTextToken;
 
         $this->withHeaders([
-            'X-Tenant-ID'   => $tenant->subdomain,
-            'Authorization' => 'Bearer ' . $token,
+            'X-Tenant-ID' => $tenant->subdomain,
+            'Authorization' => 'Bearer '.$token,
         ])->patchJson("/api/v1/users/{$member->id}/role", ['role' => 'admin'])
             ->assertStatus(200)
             ->assertJsonPath('data.role', 'admin');
@@ -58,8 +61,8 @@ describe('users API', function () {
 
         // member calling delete will hit UserService which throws ValidationException
         $this->withHeaders([
-            'X-Tenant-ID'   => $tenant->subdomain,
-            'Authorization' => 'Bearer ' . $token,
+            'X-Tenant-ID' => $tenant->subdomain,
+            'Authorization' => 'Bearer '.$token,
         ])->deleteJson("/api/v1/users/{$target->id}")
             ->assertStatus(422);
     });

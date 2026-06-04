@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Models\Tenant;
 use App\Models\User;
 use App\Scopes\TenantScope;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 describe('tenant isolation', function () {
     it('global scope prevents cross-tenant user access', function () {
@@ -36,7 +39,7 @@ describe('tenant isolation', function () {
 
     it('Tenant can() returns correct feature flags per plan', function () {
         $freeTenant = Tenant::factory()->onPlan('free')->create();
-        $proTenant  = Tenant::factory()->onPlan('pro')->create();
+        $proTenant = Tenant::factory()->onPlan('pro')->create();
 
         expect($freeTenant->can('api_access'))->toBeFalse()
             ->and($proTenant->can('api_access'))->toBeTrue()

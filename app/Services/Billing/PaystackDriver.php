@@ -1,29 +1,31 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services\Billing;
 
 use App\Models\Tenant;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\RequestException;
 
 class PaystackDriver implements BillingDriverInterface
 {
     private string $secretKey;
+
     private string $baseUrl;
 
     public function __construct()
     {
         $this->secretKey = (string) config('services.paystack.secret_key');
-        $this->baseUrl   = (string) config('services.paystack.payment_url', 'https://api.paystack.co');
+        $this->baseUrl = (string) config('services.paystack.payment_url', 'https://api.paystack.co');
     }
 
     public function createSubscription(Tenant $tenant, string $planCode, string $email): array
     {
         $response = Http::withToken($this->secretKey)
             ->post("{$this->baseUrl}/subscription", [
-                'customer'  => $email,
-                'plan'      => $planCode,
-                'metadata'  => ['tenant_id' => $tenant->id],
+                'customer' => $email,
+                'plan' => $planCode,
+                'metadata' => ['tenant_id' => $tenant->id],
             ])
             ->throw()
             ->json();
@@ -41,7 +43,7 @@ class PaystackDriver implements BillingDriverInterface
 
         Http::withToken($this->secretKey)
             ->post("{$this->baseUrl}/subscription/disable", [
-                'code'  => $subscriptionCode,
+                'code' => $subscriptionCode,
                 'token' => $tenant->config['paystack_email_token'] ?? '',
             ])
             ->throw();
@@ -86,8 +88,8 @@ class PaystackDriver implements BillingDriverInterface
         $tenant?->update([
             'config' => array_merge($tenant->config ?? [], [
                 'paystack_subscription_code' => $data['subscription_code'] ?? null,
-                'paystack_customer_code'     => $data['customer']['customer_code'] ?? null,
-                'paystack_email_token'       => $data['email_token'] ?? null,
+                'paystack_customer_code' => $data['customer']['customer_code'] ?? null,
+                'paystack_email_token' => $data['email_token'] ?? null,
             ]),
         ]);
     }
