@@ -8,7 +8,6 @@ services:
       - /var/www/html/vendor
     environment:
       APP_ENV: local
-      APP_KEY: base64:placeholder
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
@@ -16,6 +15,7 @@ services:
       DB_USERNAME: saas_kit
       DB_PASSWORD: saas_kit
       REDIS_HOST: redis
+      REDIS_CLIENT: predis
       CACHE_STORE: redis
       QUEUE_CONNECTION: redis
       SESSION_DRIVER: redis
@@ -54,6 +54,7 @@ services:
       DB_USERNAME: saas_kit
       DB_PASSWORD: saas_kit
       REDIS_HOST: redis
+      REDIS_CLIENT: predis
       QUEUE_CONNECTION: redis
     depends_on:
       - app

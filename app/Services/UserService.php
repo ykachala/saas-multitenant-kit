@@ -31,6 +31,10 @@ class UserService
 
     public function remove(User $target, User $actor): void
     {
+        if ($actor->role !== 'owner' && $actor->role !== 'admin') {
+            throw ValidationException::withMessages(['user' => 'Insufficient permissions.']);
+        }
+
         if ($target->id === $actor->id) {
             throw ValidationException::withMessages(['user' => 'Cannot remove yourself.']);
         }

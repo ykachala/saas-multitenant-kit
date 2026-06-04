@@ -44,8 +44,13 @@ describe('EnforceFeatureGate middleware', function () {
     it('suspended tenant is rejected by ResolveTenant', function () {
         $tenant = Tenant::factory()->suspended()->create();
 
+        // The health endpoint is intentionally tenant-agnostic (load-balancer probe),
+        // so exercise ResolveTenant against a route that actually applies the middleware.
+        \Illuminate\Support\Facades\Route::middleware(['tenant'])
+            ->get('/test-suspended-tenant', fn () => response()->json(['ok' => true]));
+
         $response = $this->withHeaders(['X-Tenant-ID' => $tenant->subdomain])
-            ->getJson('/api/v1/health');
+            ->getJson('/test-suspended-tenant');
 
         $response->assertStatus(403);
     });

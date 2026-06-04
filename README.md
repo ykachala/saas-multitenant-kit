@@ -137,34 +137,95 @@ This kit solves those problems before you write a line of product code. It's the
 
 ## Getting started
 
+### Prerequisites
+
+The Docker stack bundles everything the app needs (PHP, PostgreSQL, Redis, Nginx, Horizon),
+so the **only** software you must install on your machine is:
+
+| Package | Version | Why |
+|---------|---------|-----|
+| [Docker Engine](https://docs.docker.com/engine/install/) | 20.10+ | Runs the app, database, cache, queue and proxy containers |
+| [Docker Compose](https://docs.docker.com/compose/install/) | v2 (`docker compose`) | Orchestrates the multi-container stack |
+| [Git](https://git-scm.com/) | any | Cloning the repository |
+
+Everything else is provisioned inside the containers and pinned for you:
+
+- **PHP 8.3** with the `pdo_pgsql`, `pcntl`, `zip` and `opcache` extensions (see `Dockerfile`)
+- **PostgreSQL 15** and **Redis 7** (see `docker-compose.yml`)
+- **Composer** dependencies, including `predis/predis` (the pure-PHP Redis client — no
+  PECL/`phpredis` extension required, so the image builds anywhere)
+
+> You do **not** need PHP, Composer, PostgreSQL, Redis or Node installed locally to run the
+> kit with Docker. Node + npm are only needed if you want to rebuild the frontend assets
+> (`npm install && npm run build`); the app renders fine without them.
+
+### Quick start (Docker)
+
 ```bash
 git clone https://github.com/ykachala/saas-multitenant-kit.git
 cd saas-multitenant-kit
 cp .env.example .env
-docker compose up -d
+
+# Build the images and start the stack (postgres, redis, app, horizon, nginx)
+docker compose up -d --build
+
+# Generate the Laravel application key (writes APP_KEY into your .env)
+docker compose exec app php artisan key:generate
+
+# Create the schema and seed two demo tenants
 docker compose exec app php artisan migrate --seed
 ```
 
 App: `http://localhost:8080`  
-Horizon dashboard: `http://localhost:8080/horizon`
+Horizon dashboard: `http://localhost:8080/horizon`  
+Health check: `http://localhost:8080/api/v1/health`
+
+The Makefile wraps the common commands — `make up`, `make migrate-fresh`, `make test`,
+`make shell`, `make tinker`, etc.
+
+### Try the API
+
+The seeder creates two tenants (`acme` on the Pro plan, `globex` on Starter). Resolve a
+tenant with the `X-Tenant-ID` header (subdomain, custom domain, or `X-Tenant-Subdomain`
+also work). Demo credentials: **`owner@acme.test` / `password`**.
 
 ```bash
-# Run tests
+# Log in and grab a Sanctum token
+curl -s http://localhost:8080/api/v1/login \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H 'X-Tenant-ID: acme' \
+  -d '{"email":"owner@acme.test","password":"password"}'
+
+# Use the returned token on authenticated routes (tenant-scoped automatically)
+curl -s http://localhost:8080/api/v1/users \
+  -H 'Accept: application/json' \
+  -H 'X-Tenant-ID: acme' \
+  -H 'Authorization: Bearer <token>'
+```
+
+### Run the tests
+
+```bash
+# Run the full suite (runs against an isolated in-memory SQLite database)
 docker compose exec app php artisan test
 
 # Or with Pest directly
-docker compose exec app ./vendor/bin/pest --coverage
+docker compose exec app ./vendor/bin/pest
 ```
+
+The test suite is hermetic — it uses an in-memory SQLite database and array cache/queue
+drivers (configured in `phpunit.xml`), so running it never touches your dev Postgres or Redis.
 
 ### Local subdomain setup
 
 Add to `/etc/hosts`:
 ```
-127.0.0.1 tenant-a.localhost
-127.0.0.1 tenant-b.localhost
+127.0.0.1 acme.localhost
+127.0.0.1 globex.localhost
 ```
 
-Then access `http://tenant-a.localhost:8080` — the middleware resolves the tenant automatically.
+Then access `http://acme.localhost:8080` — the middleware resolves the tenant automatically.
 
 ---
 
